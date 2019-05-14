@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-        - image: github.com/vagababov/maxprimeclnt
+        - image: github.com/vagababov/prime-client
           ports:
             - name: http1
               containerPort: 8080
