@@ -1,0 +1,94 @@
+/*
+	Knative colors
+	Dark Blue: #0865ad
+	Light Blue: #6695ca
+
+*/
+
+
+html,
+body {
+	height: 100%;
+	font-family: 'Arial', sans-serif;
+	font-weight: 400;
+	margin: 0;
+	padding: 0;
+	background-color: #fff;
+}
+
+#wrapper {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	text-align: center;
+	widows: 100%;
+}
+
+#page-header {
+	padding: 0;
+	margin: 20px;
+}
+
+#page-header-title {
+	color: #999;
+	font-size: 3em;
+}
+
+#page-header-image {
+	border: 0;
+}
+
+#prime {
+	margin: 30px;
+	margin: auto;
+	align-self: center;
+}
+
+#prime form {
+	clear: both;
+}
+
+#calc-val {
+	font-size: 2.2em;
+	width: 200px;
+	border: 1px solid #0865ad;
+	margin: 3px;
+	text-align: right;
+	vertical-align: -webkit-baseline-middle;
+}
+
+#calc-button {
+	text-decoration: none;
+	background-color: #0865ad;
+  	color: #fff;
+  	padding: 4px 6px 4px 6px;
+	border: 1px solid #0865ad;
+	font-size: 2em;
+	vertical-align: -webkit-baseline-middle;
+}
+
+#calc-result{
+	font-size: 1.2em;
+	clear: both;
+	margin: auto;
+	align-self: center;
+	margin: 30px;
+}
+
+#prime-link {
+	font-size: 1em;
+	clear: both;
+	margin: auto;
+	align-self: center;
+	margin: 20 0px;
+}
+
+#page-footer {
+	widows: 80%;
+	margin: 50px 0 0 0;
+	color: #666;
+	font-weight: 400;
+	font-size: 1em;
+	padding: 0;
+	margin: 1.2px;
+}

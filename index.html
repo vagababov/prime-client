@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MaxPrime - Knative Demo App for GitOps using Cloud Build and Knative</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Knative Demo App for GitOps using Cloud Build and Knative">
+    <meta name="keywords" content="google, git, build, golang, knative">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Pragma" content="-1">
+    <link href="img/favicon.ico" rel="shortcut icon" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- Header -->
+        <div id="page-header">
+            <div id="page-header-image">
+              {{ if .altLogo }}
+                <img src="img/knative-logo2.png" />
+              {{ else }}
+                <img src="img/knative-logo.png" />
+              {{ end }}
+            </div>
+            <div id="page-header-title">
+                Max Prime Calculator
+            </div>
+        </div>
+
+        <!-- Primer -->
+        <div id="prime">
+            <form action='/prime' method="get">
+                <!-- Ceiling also set on the server -->
+                <input id="calc-val" name="query" type="text" value="{{ .max }}">
+                <input type="submit" value="Calculate">
+            </form>
+            <div id="calc-result">{{ .result }} </div>
+        </div>
+
+
+        <!-- Footer -->
+        <div id="page-footer">
+            <p>
+                <a href="https://github.com/knative/">Knative</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

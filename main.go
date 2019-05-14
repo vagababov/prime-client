@@ -1,0 +1,120 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	pb "github.com/vagababov/prime-server/proto"
+)
+
+const (
+	defaultPort      = "8080"
+	portVariableName = "PORT"
+)
+
+var (
+	backend = flag.String("backend", "http-prime.default.svc.cluster.local",
+		"The k8s service name to query the backend information")
+	host = flag.String("host", "", "The host name to use if client runs outside of the cluster")
+)
+
+func main() {
+	flag.Parse()
+
+	// router
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+
+	// static
+	r.LoadHTMLFiles("./index.html")
+	r.Static("/img", "./static/img")
+	r.Static("/css", "./static/css")
+
+	// routes
+	r.GET("/", handlerDef)
+	r.GET("/prime", handler)
+
+	// port
+	port := defaultPort
+	addr := fmt.Sprintf(":%s", port)
+	fmt.Printf("Server starting: %s \n", addr)
+	if err := r.Run(addr); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handler(ctx *gin.Context) {
+	param := ctx.DefaultQuery("query", "4")
+	qint, err := strconv.ParseInt(param, 10 /*base*/, 64 /*bitcnt*/)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	query := &pb.Request{
+		Query: qint,
+	}
+	b, _ := json.Marshal(query)
+	buf := bytes.NewBuffer(b)
+
+	req, _ := makeHTTPReq(buf)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer resp.Body.Close()
+	rsp, err := ReadResponse(resp.Body)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
+		"max":     qint,
+		"result":  fmt.Sprintf("Highest prime: %d", rsp.Answer),
+		"altLogo": rsp.Answer < 0,
+	})
+
+}
+
+func handlerDef(ctx *gin.Context) {
+	// Dummy inital values.
+	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
+		"max":    4,
+		"result": "Highest prime: 3",
+	})
+}
+
+func ReadResponse(r io.Reader) (*pb.Response, error) {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.Response{}
+	err = json.Unmarshal(data, resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func makeHTTPReq(b *bytes.Buffer) (*http.Request, error) {
+	url := fmt.Sprintf("http://%s/", *backend)
+	req, err := http.NewRequest(http.MethodPost, url, b)
+	if err != nil {
+		return nil, err
+	}
+	if *host != "" {
+		req.Host = *host
+	}
+	return req, nil
+}
