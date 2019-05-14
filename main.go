@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +28,11 @@ var (
 	host = flag.String("host", "", "The host name to use if client runs outside of the cluster")
 )
 
+const (
+	koPathEnvVar = "KO_DATA_PATH"
+	koPathDefVal = "./kodata/"
+)
+
 func main() {
 	flag.Parse()
 
@@ -34,10 +41,13 @@ func main() {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	koPath := getEnv(koPathEnvVar, koPathDefVal)
+	fmt.Printf("KO Path: %q\n", koPath)
+
 	// static
-	r.LoadHTMLFiles("./index.html")
-	r.Static("/img", "./static/img")
-	r.Static("/css", "./static/css")
+	r.LoadHTMLFiles(path.Join(koPath, "index.html"))
+	r.Static("/img", path.Join(koPath, "static/img"))
+	r.Static("/css", path.Join(koPath, "static/css"))
 
 	// routes
 	r.GET("/", handlerDef)
@@ -117,4 +127,12 @@ func makeHTTPReq(b *bytes.Buffer) (*http.Request, error) {
 		req.Host = *host
 	}
 	return req, nil
+}
+
+func getEnv(s, d string) string {
+	ret := os.Getenv(s)
+	if ret == "" {
+		ret = d
+	}
+	return ret
 }
