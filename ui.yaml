@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: ui-client
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: github.com/vagababov/maxprimeclnt
+          ports:
+            - name: http1
+              containerPort: 8080
+
