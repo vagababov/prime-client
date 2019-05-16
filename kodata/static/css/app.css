@@ -75,6 +75,15 @@ body {
 	margin: 30px;
 }
 
+#motd{
+	font-size: 1.5em;
+        font-weight: bolder;
+	clear: both;
+	margin: auto;
+	align-self: center;
+	margin: 30px;
+}
+
 #prime-link {
 	font-size: 1em;
 	clear: both;

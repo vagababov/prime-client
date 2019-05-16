@@ -111,6 +111,7 @@ func doHTTP(ctx *gin.Context, query *pb.Request) {
 		"max":     query.Query,
 		"result":  fmt.Sprintf("Highest prime: %d", rsp.Answer),
 		"altLogo": logo,
+		"motd":    "Good Ol' HTTP is in play 'ere!",
 	})
 }
 
@@ -126,6 +127,7 @@ func doGRPC(ctx *gin.Context, query *pb.Request) {
 		"max":     query.Query,
 		"result":  fmt.Sprintf("Highest prime: %d", resp.Answer),
 		"altLogo": logo,
+		"motd":    "Brought to you the gRPC!",
 	})
 }
 
