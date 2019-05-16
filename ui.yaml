@@ -1,16 +1,14 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: ui-client
+  name: prime-ui
   namespace: default
 spec:
   template:
     metadata:
-      name: ui-client-http
+      name: prime-ui-http
     spec:
       containers:
         - image: github.com/vagababov/prime-client
-          ports:
-            - name: http1
-              containerPort: 8080
+      containerConcurrency: 15
 

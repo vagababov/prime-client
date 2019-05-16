@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	backend = flag.String("backend", "http-prime.default.svc.cluster.local",
+	backend = flag.String("backend", "prime-api.default.svc.cluster.local",
 		"The k8s service name to query the backend information")
 	host     = flag.String("host", "", "The host name to use if client runs outside of the cluster")
 	insecure = flag.Bool("insecure", true, "true if we want to skip SSL certificate for gRPC calls")
