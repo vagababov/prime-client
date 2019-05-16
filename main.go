@@ -59,8 +59,8 @@ func main() {
 	r.GET("/prime", handler)
 
 	// port
-	port := defaultPort
-	addr := fmt.Sprintf(":%s", port)
+	port := getEnv(portVariableName, defaultPort)
+	addr := ":" + port
 	fmt.Printf("Server starting: %s \n", addr)
 	if err := r.Run(addr); err != nil {
 		log.Fatal(err)
