@@ -10,8 +10,5 @@ spec:
     spec:
       containers:
         - image: github.com/vagababov/prime-client
-          args: ["--use_grpc", "--backend", "prime-grpc:80", "--host", "prime-grpc.default.35.222.221.17.xip.io"]
-          ports:
-            - name: http1
-              containerPort: 8080
+          args: ["--use_grpc", "--backend", "prime-api:80", "--host", "prime-api-grpc-api.default.35.222.221.17.xip.io"]
       containerConcurrency: 15
