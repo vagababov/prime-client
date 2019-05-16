@@ -1,0 +1,20 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: ui-client
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: github.com/vagababov/prime-client
+  traffic:
+  - tag: http1 # Can't use http or grpc. Will collide with placeholder name.
+    revisionName: ui-client-http
+    percent: 50
+  - tag: grpc1
+    revisionName: ui-client-grpc
+    percent: 50
+  - tag: latest
+    latestRevision: true
+    percent: 0

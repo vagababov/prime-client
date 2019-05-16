@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -12,9 +13,11 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/vagababov/prime-server/proto"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -25,7 +28,9 @@ const (
 var (
 	backend = flag.String("backend", "http-prime.default.svc.cluster.local",
 		"The k8s service name to query the backend information")
-	host = flag.String("host", "", "The host name to use if client runs outside of the cluster")
+	host     = flag.String("host", "", "The host name to use if client runs outside of the cluster")
+	insecure = flag.Bool("insecure", true, "true if we want to skip SSL certificate for gRPC calls")
+	useGRPC  = flag.Bool("use_grpc", false, "If true, the service will use gRPC to talk to the backend")
 )
 
 const (
@@ -72,6 +77,16 @@ func handler(ctx *gin.Context) {
 	query := &pb.Request{
 		Query: qint,
 	}
+
+	if *useGRPC {
+		doGRPC(ctx, query)
+	} else {
+		doHTTP(ctx, query)
+	}
+}
+
+func doHTTP(ctx *gin.Context, query *pb.Request) {
+	fmt.Println("HTTP pill is taken")
 	b, _ := json.Marshal(query)
 	buf := bytes.NewBuffer(b)
 
@@ -87,13 +102,31 @@ func handler(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	logo := ""
+	if rsp.Answer < 0 {
+		logo = "img/knative-logo2.png"
+	}
 
 	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
-		"max":     qint,
+		"max":     query.Query,
 		"result":  fmt.Sprintf("Highest prime: %d", rsp.Answer),
-		"altLogo": rsp.Answer < 0,
+		"altLogo": logo,
 	})
+}
 
+func doGRPC(ctx *gin.Context, query *pb.Request) {
+	fmt.Println("gRPC pill is taken")
+	resp, err := queryGRPC(query)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	const logo = "img/knative-logo3.png"
+	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
+		"max":     query.Query,
+		"result":  fmt.Sprintf("Highest prime: %d", resp.Answer),
+		"altLogo": logo,
+	})
 }
 
 func handlerDef(ctx *gin.Context) {
@@ -135,4 +168,33 @@ func getEnv(s, d string) string {
 		ret = d
 	}
 	return ret
+}
+
+func queryGRPC(req *pb.Request) (*pb.Response, error) {
+	var opts []grpc.DialOption
+	if *host != "" {
+		opts = append(opts, grpc.WithAuthority(*host))
+	}
+	if *insecure {
+		opts = append(opts, grpc.WithInsecure())
+	}
+	fmt.Printf("Dialing to: %s\n", *backend)
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+	conn, err := grpc.DialContext(ctx, *backend, opts...)
+	if err != nil {
+		fmt.Printf("failed to dial: %v\n", err)
+		return nil, err
+	}
+	defer conn.Close()
+
+	client := pb.NewPrimeServiceClient(conn)
+
+	resp, err := client.Get(context.Background(), req)
+	if err != nil {
+		fmt.Printf("Error calling Get: %+v\n", err)
+		return nil, err
+	}
+	fmt.Printf("gRPC response is: %v\n", resp)
+	return resp, nil
 }

@@ -6,10 +6,11 @@ metadata:
 spec:
   template:
     metadata:
-      name: ui-client-http
+      name: ui-client-grpc
     spec:
       containers:
         - image: github.com/vagababov/prime-client
+          args: ["--use_grpc", "--backend", "grpc-prime.default.svc.cluster.local:80", "--host", "grpc-prime.default.35.222.221.17.xip.io"]
           ports:
             - name: http1
               containerPort: 8080
