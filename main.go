@@ -86,7 +86,7 @@ func handler(ctx *gin.Context) {
 }
 
 func doHTTP(ctx *gin.Context, query *pb.Request) {
-	fmt.Println("HTTP pill is taken")
+	fmt.Println("HTTP")
 	b, _ := json.Marshal(query)
 	buf := bytes.NewBuffer(b)
 
@@ -109,14 +109,14 @@ func doHTTP(ctx *gin.Context, query *pb.Request) {
 
 	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
 		"max":     query.Query,
-		"result":  fmt.Sprintf("Highest prime: %d", rsp.Answer),
+		"result":  rsp.Answer,
 		"altLogo": logo,
-		"motd":    "Good Ol' HTTP is in play 'ere!",
+		"motd":    "HTTP",
 	})
 }
 
 func doGRPC(ctx *gin.Context, query *pb.Request) {
-	fmt.Println("gRPC pill is taken")
+	fmt.Println("gRPC")
 	resp, err := queryGRPC(query)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -125,7 +125,7 @@ func doGRPC(ctx *gin.Context, query *pb.Request) {
 	const logo = "img/knative-logo3.png"
 	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
 		"max":     query.Query,
-		"result":  fmt.Sprintf("Highest prime: %d", resp.Answer),
+		"result":  resp.Answer,
 		"altLogo": logo,
 		"motd":    "Brought to you by the gRPC!",
 	})
@@ -135,7 +135,7 @@ func handlerDef(ctx *gin.Context) {
 	// Dummy inital values.
 	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
 		"max":    4,
-		"result": "Highest prime: 3",
+		"result": "3",
 	})
 }
 

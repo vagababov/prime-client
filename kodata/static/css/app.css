@@ -5,14 +5,13 @@
 
 */
 
-
 html,
 body {
 	height: 100%;
 	font-family: 'Arial', sans-serif;
 	font-weight: 400;
 	margin: 0;
-	padding: 0;
+	padding: 40px;
 	background-color: #fff;
 }
 
@@ -42,50 +41,48 @@ body {
 	margin: 30px;
 	margin: auto;
 	align-self: center;
+	width: 463px;
+	align-self: center;
 }
 
 #prime form {
 	clear: both;
 }
 
-#calc-val {
-	font-size: 2.2em;
-	width: 200px;
-	border: 1px solid #0865ad;
-	margin: 3px;
-	text-align: right;
-	vertical-align: -webkit-baseline-middle;
-}
-
-#calc-button {
-	text-decoration: none;
-	background-color: #0865ad;
-  	color: #fff;
-  	padding: 4px 6px 4px 6px;
-	border: 1px solid #0865ad;
-	font-size: 2em;
-	vertical-align: -webkit-baseline-middle;
-}
-
 #calc-result{
-	font-size: 1.2em;
+	padding: 30px;
+	font-size: 24px;
+	color: #2271C9;
+}
+
+.badge-style {
+	border-radius: 11%;
+	width: 36px;
+	height: 36px;
+	padding: 8px;
+	color: #2271C9;
+	text-align: center;
+	font: 32px Arial, sans-serif;
+	position: relative;
+	top: 15px;
+	}
+
+.blue-back {
+	background: #2271C9; 
+	color: white;
+}
+
+#motd {
+	font-size: 17px;
+  font-weight: bolder;
 	clear: both;
 	margin: auto;
 	align-self: center;
 	margin: 30px;
 }
 
-#motd{
-	font-size: 1.5em;
-        font-weight: bolder;
-	clear: both;
-	margin: auto;
-	align-self: center;
-	margin: 30px;
-}
-
-#prime-link {
-	font-size: 1em;
+.prime-link {
+	font-size: 25px;
 	clear: both;
 	margin: auto;
 	align-self: center;
@@ -95,9 +92,32 @@ body {
 #page-footer {
 	widows: 80%;
 	margin: 50px 0 0 0;
-	color: #666;
+	color: #eee;
 	font-weight: 400;
-	font-size: 1em;
 	padding: 0;
 	margin: 1.2px;
+	position: fixed;
+	bottom: 0;
+	font-size: 17px;
+	width: 92%;
+}
+
+.input, .submit {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 20px;
+    border-radius: 0;
+	-webkit-appearance: none;
+	border-radius: 5px;
+	box-shadow: 5px 5px 3px grey;
+}
+
+.input {
+	border: 1px solid lightgray;
+	width: 308px;
+}
+
+.submit {
+    background-color: #efd135;
+		border: 1px solid transparent;
 }
