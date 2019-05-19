@@ -127,7 +127,7 @@ func doGRPC(ctx *gin.Context, query *pb.Request) {
 		"max":     query.Query,
 		"result":  resp.Answer,
 		"altLogo": logo,
-		"motd":    "Brought to you by the gRPC!",
+		"motd":    "gRPC",
 	})
 }
 
@@ -135,7 +135,8 @@ func handlerDef(ctx *gin.Context) {
 	// Dummy inital values.
 	ctx.HTML(http.StatusOK, "index.html", map[string]interface{}{
 		"max":    4,
-		"result": "3",
+		"result": 3,
+		"motd":   "HTTP",
 	})
 }
 
